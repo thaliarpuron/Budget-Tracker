@@ -46,12 +46,14 @@ self.addEventListener("fetch", event => {
       caches.open(DATA_CACHE_NAME).then(cache => {
         return fetch(event.request)
           .then(response => {
+            // If the response was good, clone it and store it in the cache.
             if (response.status === 200) {
               cache.put(event.request.url, response.clone());
             }
             return response;
           })
           .catch(err => {
+            // Network request failed, try to get it from the cache.
             return cache.match(event.request);
           });
       })
